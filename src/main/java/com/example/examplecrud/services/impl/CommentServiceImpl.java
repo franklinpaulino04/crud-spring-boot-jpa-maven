@@ -1,9 +1,11 @@
 package com.example.examplecrud.services.impl;
 
+import com.example.examplecrud.dtos.CommentDto;
 import com.example.examplecrud.dtos.CommentRequestDto;
 import com.example.examplecrud.dtos.CommentResponseDto;
 import com.example.examplecrud.entities.Comment;
 import com.example.examplecrud.entities.User;
+import com.example.examplecrud.mappers.ICommentMapper;
 import com.example.examplecrud.mappers.ICommentRequestMapper;
 import com.example.examplecrud.mappers.ICommentResponseMapper;
 import com.example.examplecrud.repositories.CommentRepository;
@@ -30,12 +32,14 @@ public class CommentServiceImpl implements ICommentService {
     
     @Autowired
     ICommentResponseMapper commentResponseMapper;
-    
+    @Autowired
+    private ICommentMapper iCommentMapper;
+
     @Override
-    public Page<Comment> findAllComments(int pageNo, int pageSize, String sortBy, String sortDirection) {
+    public Page<CommentDto> findAllComments(int pageNo, int pageSize, String sortBy, String sortDirection) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        return commentRepository.findAll(pageable);
+        return commentRepository.findAll(pageable).map(iCommentMapper::toDto);
     }
 
     @Override

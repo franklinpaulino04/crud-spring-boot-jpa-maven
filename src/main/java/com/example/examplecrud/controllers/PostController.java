@@ -24,7 +24,7 @@ public class PostController {
 
     @Operation(summary = "Get all posts paginate", description = "Get all posts paginate")
     @GetMapping
-    public Page<Post> getPosts(
+    public Page<PostDto> getPosts(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "id") String sortBy,

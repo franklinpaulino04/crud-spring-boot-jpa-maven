@@ -31,12 +31,14 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     IUserResponseMapper userResponseMapper;
+    @Autowired
+    private IUserMapper iUserMapper;
 
     @Override
-    public Page<User> findAllUsers(int pageNo, int pageSize, String sortBy, String sortDirection) {
+    public Page<UserDto> findAllUsers(int pageNo, int pageSize, String sortBy, String sortDirection) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        return userRepository.findAll(pageable);
+        return userRepository.findAll(pageable).map(iUserMapper::toDto);
     }
 
     @Override

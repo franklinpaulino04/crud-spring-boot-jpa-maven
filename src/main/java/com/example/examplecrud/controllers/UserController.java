@@ -28,7 +28,7 @@ public class UserController {
 
     @Operation(summary = "Get all users paginate", description = "Get all users paginate")
     @GetMapping
-    public Page<User> findAllPaginateUsers(
+    public Page<UserDto> findAllPaginateUsers(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "id") String sortBy,

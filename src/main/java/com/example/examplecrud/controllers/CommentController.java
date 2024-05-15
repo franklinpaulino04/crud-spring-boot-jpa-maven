@@ -24,7 +24,7 @@ public class CommentController {
 
     @Operation(summary = "Get all comments paginate", description = "Get all comments paginate")
     @GetMapping
-    public Page<Comment> getComments(
+    public Page<CommentDto> getComments(
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "id") String sortBy,

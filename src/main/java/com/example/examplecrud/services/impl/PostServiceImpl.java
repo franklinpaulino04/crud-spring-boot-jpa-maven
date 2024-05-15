@@ -1,9 +1,11 @@
 package com.example.examplecrud.services.impl;
 
+import com.example.examplecrud.dtos.PostDto;
 import com.example.examplecrud.dtos.PostResponseDto;
 import com.example.examplecrud.dtos.PostRequestDto;
 import com.example.examplecrud.entities.Comment;
 import com.example.examplecrud.entities.Post;
+import com.example.examplecrud.mappers.IPostMapper;
 import com.example.examplecrud.mappers.IPostRequestMapper;
 import com.example.examplecrud.mappers.IPostResponseMapper;
 import com.example.examplecrud.repositories.PostRepository;
@@ -30,12 +32,14 @@ public class PostServiceImpl implements IPostService {
     
     @Autowired
     IPostResponseMapper postResponseMapper;
-    
+    @Autowired
+    private IPostMapper iPostMapper;
+
     @Override
-    public Page<Post> findAllPosts(int pageNo, int pageSize, String sortBy, String sortDirection) {
+    public Page<PostDto> findAllPosts(int pageNo, int pageSize, String sortBy, String sortDirection) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        return postRepository.findAll(pageable);
+        return postRepository.findAll(pageable).map(iPostMapper::toDto);
     }
 
     @Override

@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface IUserService {
-    Page<User> findAllUsers(int pageNo, int pageSize, String sortBy, String sortDirection);
+    Page<UserDto> findAllUsers(int pageNo, int pageSize, String sortBy, String sortDirection);
     UserResponseDto getUser(Long id);
     UserResponseDto addUser(UserRequestDto userRequestDto);
     UserResponseDto updateUser(Long id, UserRequestDto userRequestDto);
