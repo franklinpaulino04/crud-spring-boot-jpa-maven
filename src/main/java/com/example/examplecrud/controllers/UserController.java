@@ -1,15 +1,20 @@
 package com.example.examplecrud.controllers;
 
 import com.example.examplecrud.dtos.SendResponseDto;
+import com.example.examplecrud.dtos.UserDto;
 import com.example.examplecrud.dtos.UserRequestDto;
 import com.example.examplecrud.dtos.UserResponseDto;
+import com.example.examplecrud.entities.User;
 import com.example.examplecrud.services.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 @Tag(name = "Users", description = "Users API")
@@ -21,11 +26,14 @@ public class UserController {
     @Autowired
     IUserService userService;
 
-    @Operation(summary = "Get all users", description = "Get all users")
+    @Operation(summary = "Get all users paginate", description = "Get all users paginate")
     @GetMapping
-    public SendResponseDto getUsers() {
-        List<UserResponseDto> users = userService.findAllUsers();
-        return new SendResponseDto(true,"",  users);
+    public Page<User> findAllPaginateUsers(
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDirection) {
+        return userService.findAllUsers(pageNo, pageSize, sortBy, sortDirection);
     }
 
     @Operation(summary = "Get user by id", description = "Get user by id")

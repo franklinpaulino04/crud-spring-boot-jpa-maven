@@ -1,11 +1,14 @@
 package com.example.examplecrud.controllers;
 
 import com.example.examplecrud.dtos.*;
+import com.example.examplecrud.entities.Comment;
+import com.example.examplecrud.entities.User;
 import com.example.examplecrud.services.ICommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,11 +22,14 @@ public class CommentController {
     @Autowired
     ICommentService commentService;
 
-    @Operation(summary = "Get all comments", description = "Get all comments")
+    @Operation(summary = "Get all comments paginate", description = "Get all comments paginate")
     @GetMapping
-    public SendResponseDto getComments() {
-        List<CommentResponseDto> comments = commentService.findAllComments();
-        return new SendResponseDto(true,"",  comments);
+    public Page<Comment> getComments(
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDirection) {
+        return commentService.findAllComments(pageNo, pageSize, sortBy, sortDirection);
     }
 
     @Operation(summary = "Get comment by id", description = "Get comment by id")

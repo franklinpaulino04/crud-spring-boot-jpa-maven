@@ -1,14 +1,20 @@
 package com.example.examplecrud.services.impl;
 
+import com.example.examplecrud.dtos.UserDto;
 import com.example.examplecrud.dtos.UserRequestDto;
 import com.example.examplecrud.dtos.UserResponseDto;
 import com.example.examplecrud.entities.User;
+import com.example.examplecrud.mappers.IUserMapper;
 import com.example.examplecrud.mappers.IUserRequestMapper;
 import com.example.examplecrud.mappers.IUserResponseMapper;
 import com.example.examplecrud.repositories.UserRepository;
 import com.example.examplecrud.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,15 +33,10 @@ public class UserServiceImpl implements IUserService {
     IUserResponseMapper userResponseMapper;
 
     @Override
-    public List<UserResponseDto> findAllUsers() {
-        List<User> users = userRepository.findAll().stream().toList();
-        if (users.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return userRepository.findAll()
-                .stream().map(userResponseMapper::toDto)
-                .collect(Collectors.toList());
+    public Page<User> findAllUsers(int pageNo, int pageSize, String sortBy, String sortDirection) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        return userRepository.findAll(pageable);
     }
 
     @Override

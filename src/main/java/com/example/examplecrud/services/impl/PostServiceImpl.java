@@ -2,12 +2,17 @@ package com.example.examplecrud.services.impl;
 
 import com.example.examplecrud.dtos.PostResponseDto;
 import com.example.examplecrud.dtos.PostRequestDto;
+import com.example.examplecrud.entities.Comment;
 import com.example.examplecrud.entities.Post;
 import com.example.examplecrud.mappers.IPostRequestMapper;
 import com.example.examplecrud.mappers.IPostResponseMapper;
 import com.example.examplecrud.repositories.PostRepository;
 import com.example.examplecrud.services.IPostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -27,15 +32,10 @@ public class PostServiceImpl implements IPostService {
     IPostResponseMapper postResponseMapper;
     
     @Override
-    public List<PostResponseDto> findAllPosts() {
-        List<Post> posts = postRepository.findAll().stream().toList();
-        if (posts.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return postRepository.findAll()
-                .stream().map(postResponseMapper::toDto)
-                .collect(Collectors.toList());
+    public Page<Post> findAllPosts(int pageNo, int pageSize, String sortBy, String sortDirection) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        return postRepository.findAll(pageable);
     }
 
     @Override

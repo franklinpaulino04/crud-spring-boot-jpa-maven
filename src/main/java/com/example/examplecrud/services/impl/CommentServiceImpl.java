@@ -3,11 +3,16 @@ package com.example.examplecrud.services.impl;
 import com.example.examplecrud.dtos.CommentRequestDto;
 import com.example.examplecrud.dtos.CommentResponseDto;
 import com.example.examplecrud.entities.Comment;
+import com.example.examplecrud.entities.User;
 import com.example.examplecrud.mappers.ICommentRequestMapper;
 import com.example.examplecrud.mappers.ICommentResponseMapper;
 import com.example.examplecrud.repositories.CommentRepository;
 import com.example.examplecrud.services.ICommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -27,15 +32,10 @@ public class CommentServiceImpl implements ICommentService {
     ICommentResponseMapper commentResponseMapper;
     
     @Override
-    public List<CommentResponseDto> findAllComments() {
-        List<Comment> comments = commentRepository.findAll().stream().toList();
-        if (comments.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return commentRepository.findAll()
-                .stream().map(commentResponseMapper::toDto)
-                .collect(Collectors.toList());
+    public Page<Comment> findAllComments(int pageNo, int pageSize, String sortBy, String sortDirection) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        return commentRepository.findAll(pageable);
     }
 
     @Override

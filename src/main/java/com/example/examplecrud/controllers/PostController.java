@@ -1,11 +1,14 @@
 package com.example.examplecrud.controllers;
 
 import com.example.examplecrud.dtos.*;
+import com.example.examplecrud.entities.Post;
+import com.example.examplecrud.entities.User;
 import com.example.examplecrud.services.IPostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,11 +22,14 @@ public class PostController {
     @Autowired
     IPostService postService;
 
-    @Operation(summary = "Get all posts", description = "Get all posts")
+    @Operation(summary = "Get all posts paginate", description = "Get all posts paginate")
     @GetMapping
-    public SendResponseDto getPosts() {
-        List<PostResponseDto> posts = postService.findAllPosts();
-        return new SendResponseDto(true,"",  posts);
+    public Page<Post> getPosts(
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDirection) {
+        return postService.findAllPosts(pageNo, pageSize, sortBy, sortDirection);
     }
 
     @Operation(summary = "Get post by id", description = "Get post by id")
